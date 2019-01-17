@@ -27,7 +27,6 @@ var bd_values = [4, 10, 20, 20, 30, 30, 30];
 function drawTree(numSplit) {
     ctx.strokeStyle = "#ff66ff";
     var angle = (180/(numSplit + 1));
-    console.log(angle);
     ctx.beginPath();
     var p1 = new point(width/2,height);
     var p2 = new point(width/2,7.3*height/10);
@@ -37,7 +36,7 @@ function drawTree(numSplit) {
 }
 
 function grow(root, bd, angle_prev, count, numSplit, angle) {
-    if (bd < 30) return;
+    if (bd < bd_values[numSplit - 2]) return;
     var pts = [];
     for (let i = 1; i <= numSplit; i++) {
         let new_pt = new point(root.x + bd * Math.cos(degToRad(angle_prev - 90 + angle * i)),root.y - bd*Math.sin(degToRad(angle_prev - 90 + angle * i)));
@@ -53,7 +52,26 @@ function grow(root, bd, angle_prev, count, numSplit, angle) {
     }
 }
 
-drawTree(8);
+var feedback = document.getElementById('feedback');
+
+var options = document.getElementsByClassName('option');
+for (let i=0; i < options.length; i++) {
+    options[i].style.cursor = 'pointer';
+    options[i].onclick = function() {
+        ctx.fillStyle = "#f2f2f2";
+        ctx.fillRect(0,0,width,height);
+        for (let j=0; j < options.length; j++) {
+            options[j].style.borderColor ="#b3ccff";
+        }
+        options[i].style.borderColor = "#ff66ff";
+        drawTree(Number(options[i].innerHTML));
+        feedback.innerHTML = "Currently " + options[i].innerHTML + " branches";
+    }
+};
+
+ctx.fillStyle = "#f2f2f2";
+ctx.fillRect(0,0,width,height);
+drawTree(2);
 
 //var angle = degToRad(180 / (numSplit + 1)); // if it is 2 branches then 60 degrees. 3 branches it is 45 degrees. 4 branches then its 180/5. etc...
 /*
